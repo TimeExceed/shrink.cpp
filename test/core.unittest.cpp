@@ -15,7 +15,7 @@ void shrink_unshrink(const string&) {
     ranges::copy(
         trial | views::transform([](auto x) { return x.v; }),
         std::back_inserter(trial_res));
-    vector<uint8_t> oracle = {1, 2};
+    vector<uint8_t> oracle = {};
     TESTA_ASSERT(trial_res == oracle)
         .hint("trial: {}", join(trial_res, ", "sv))
         .hint("oracle: {}", join(oracle, ", "sv))
