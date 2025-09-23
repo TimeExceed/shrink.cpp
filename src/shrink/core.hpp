@@ -41,36 +41,38 @@ struct Unshrink {
 };
 
 template<class T>
+struct _EmptyShrinkerImpl {
+    using value_type = T;
+    using difference_type = std::ptrdiff_t;
+    using iterator = value_type const*;
+    using const_iterator = iterator;
+
+    iterator begin() const noexcept {
+        return nullptr;
+    }
+
+    iterator end() const noexcept {
+        return nullptr;
+    }
+
+    iterator cbegin() const noexcept {
+        return begin();
+    }
+
+    iterator cend() const noexcept {
+        return end();
+    }
+};
+
+
+template<class T>
 requires std::is_move_constructible_v<T>
 struct Shrinker<Unshrink<T>> {
-    struct ShrinkerImpl {
-        using value_type = Unshrink<T>;
-        using difference_type = std::ptrdiff_t;
-        using iterator = value_type const*;
-        using const_iterator = iterator;
-
-        iterator begin() const noexcept {
-            return nullptr;
-        }
-
-        iterator end() const noexcept {
-            return nullptr;
-        }
-
-        iterator cbegin() const noexcept {
-            return begin();
-        }
-
-        iterator cend() const noexcept {
-            return end();
-        }
-    };
-
     explicit Shrinker(Unshrink<T> v) noexcept
     {}
 
-    ShrinkerImpl shrink() && noexcept {
-        return ShrinkerImpl();
+    _EmptyShrinkerImpl<Unshrink<T>> shrink() && noexcept {
+        return _EmptyShrinkerImpl<Unshrink<T>>();
     }
 };
 

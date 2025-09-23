@@ -2,9 +2,9 @@
 #include "shrink/int.hpp"
 #include "test_util.hpp"
 #include "testa.hpp"
-#include <ranges>
 #include <iterator>
 #include <algorithm>
+#include <cstddef>
 
 using namespace std;
 
@@ -97,3 +97,23 @@ void shrink_int8_neg_limit(const string&) {
 }
 }
 TESTA_DEF_JUNIT_LIKE1(shrink_int8_neg_limit);
+
+namespace {
+void shrink_byte(const string&) {
+    byte x {10};
+    auto trial = shrink::shrink(x);
+    vector<string> trial_res;
+    ranges::copy(
+        std::move(trial)
+        | views::transform([](byte b) {
+            return format("{:02x}", to_integer<int>(b));
+        }),
+        back_inserter(trial_res));
+    vector<string> oracle = {};
+    TESTA_ASSERT(trial_res == oracle)
+        .hint("trial: {}", join(trial_res, ", "sv))
+        .hint("oracle: {}", join(oracle, ", "sv))
+        .issue();
+}
+}
+TESTA_DEF_JUNIT_LIKE1(shrink_byte);

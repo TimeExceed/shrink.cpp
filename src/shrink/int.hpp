@@ -3,6 +3,7 @@
 #include "fassert.hpp"
 #include <optional>
 #include <type_traits>
+#include <cstddef>
 
 namespace shrink {
 
@@ -136,6 +137,16 @@ struct Shrinker<T> {
 
 private:
     T _v;
+};
+
+template<>
+struct Shrinker<std::byte> {
+    explicit Shrinker(std::byte) noexcept
+    {}
+
+    _EmptyShrinkerImpl<std::byte> shrink() && noexcept {
+        return _EmptyShrinkerImpl<std::byte>();
+    }
 };
 
 }
